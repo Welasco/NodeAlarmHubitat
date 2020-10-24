@@ -1,4 +1,4 @@
-﻿//#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /*
  DSC Alarm Bridge
  This NodeJS code will work like a bridge/proxy between Smartthings and DSC IT-100 Serial board
