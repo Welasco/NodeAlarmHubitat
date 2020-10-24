@@ -1,0 +1,16 @@
+{
+  "author": "victor@hepoca.com",
+  "name": "node-alarm",
+  "version": "0.0.0",
+  "description": "NodeAlarm",
+  "main": "dscalarm.js",
+  "scripts": {
+    "start": "node dscalarm.js"
+  },  
+  "dependencies": {
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "serialport": "^9.0.1",
+    "nconf": "^0.10.0"
+  }
+}

@@ -1,0 +1,290 @@
+curl -d '{type: 'zone',"command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/ 
+curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+curl -d '{"type": "zone","command":"SY-658"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+
+curl -d '{"type": "zone","command":"ZN-609002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+curl -d '{"type": "zone","command":"ZN-610002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$ curl -d '{"zone":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    20    0     0  100    20      0     20  0:00:01 --:--:--  0:00:01    71
+
+
+$ curl -d '{"zone":"ZN-609001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    20    0     0  100    20      0     20  0:00:01 --:--:--  0:00:01    85
+
+
+$ curl -d '{type: 'zone',"command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    34    0     0    0    34      0      0 --:--:--  1:11:35 --:--:--   197
+
+
+$ curl -d '{type: 'zone',"command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    34    0     0  100    34      0     34  0:00:01 --:--:--  0:00:01   242
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0    0    38      0      0 --:--:--  1:11:35 --:--:--   142
+
+
+$ ^C
+
+
+$ curl -d '{"type": "zone","command":"ZN-609001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   203
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   202
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   269
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01    81
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   152
+
+
+$ curl -d '{"type": "zone","command":"SY-821"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    35    0     0  100    35      0     35  0:00:01 --:--:--  0:00:01    77
+
+
+$ curl -d '{"type": "zone","command":"SY-000821"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01    78
+
+
+$ curl -d '{"type": "zone","command":"SY-821821"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   101
+
+
+$ curl -d '{"type": "zone","command":"SY-000821"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   202
+
+
+$ curl -d '{"type": "zone","command":"RD-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01   132
+
+
+$ curl -d '{"type": "zone","command":"SY-658"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    35    0     0  100    35      0     35  0:00:01 --:--:--  0:00:01    74
+
+
+$ curl -d '{"type": "zone","command":"SY-829"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    35    0     0  100    35      0     35  0:00:01 --:--:--  0:00:01    97
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   173
+
+
+$ curl -d '{"type": "zone","command":"ZN-610002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   187
+
+
+$ curl -d '{"type": "zone","command":"ZN-609002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   142
+
+
+$ curl -d '{"type": "zone","command":"ZN-610002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   220
+
+
+$ curl -d '{"type": "zone","command":"ZN-609002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   243
+
+
+$ curl -d '{"type": "zone","command":"ZN-610002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   222
+
+
+$ ^C
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   269
+
+
+$ curl -d '{"type": "zone","command":"ZN-609001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.6:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   243
+
+
+$ curl http://192.168.0.20:3000/api/alarmSetDate
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:--  0:00:45 --:--:--     0
+
+
+$ curl http://192.168.0.20:3000/api/alarmSetDate
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+
+$ curl http://192.168.0.20:3000/api/alarmSetDate
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+
+$ curl http://192.168.0.20:3000/api/alarmSetDate
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+
+$ curl http://192.168.0.20:3000/api/alarmSetDate
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+
+$ curl -d '{"type": "zone","command":"ZN-610001"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   269
+
+
+$ curl -d '{"type": "zone","command":"AR-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01   141
+
+
+$ curl -d '{"type": "zone","command":"ZN-610002"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   243
+
+
+$ curl -d '{"type": "zone","command":"ZN-610003"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   304
+
+
+$ curl -d '{"type": "zone","command":"ZN-610004"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   135
+
+
+$ curl -d '{"type": "zone","command":"ZN-610005"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0    0    38      0      0 --:--:--  1:11:35 --:--:--   243
+
+
+$ curl -d '{"type": "zone","command":"ZN-610006"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    38    0     0  100    38      0     38  0:00:01 --:--:--  0:00:01   187
+
+
+$ curl -d '{"type": "zone","command":"AR-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01   176
+
+
+$ curl -d '{"type": "zone","command":"AR-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01   211
+
+
+$ curl -d '{"type": "zone","command":"AR-100"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    35    0     0  100    35      0     35  0:00:01 --:--:--  0:00:01   159
+
+
+$ curl -d '{"type": "zone","command":"AR-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01    95
+
+
+$ curl -d '{"type": "zone","command":"AR-102"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    35    0     0    0    35      0      0 --:--:--  1:11:35 --:--:--   222
+
+
+$ curl -d '{"type": "zone","command":"AR-0"}' -H "Content-Type: application/json" -H "device: dscalarm" http://192.168.0.8:39500/
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    33    0     0  100    33      0     33  0:00:01 --:--:--  0:00:01   140
+
+
+$

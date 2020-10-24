@@ -1,0 +1,31 @@
+{
+    // SmartThings Node Proxy (required)
+    "httpport": 3000,                   // STNP service port
+  
+    // DSC Alarm IT100
+    "dscalarm": {
+      "alarmpassword": "1234",       // Security code to arm/disarm the panel
+      "wincom": "COM5",
+      "linuxcom": "/dev/ttyUSB0",
+      "baudRate": 9600,
+      "panelConfig": {              // Set this to manual define partitions and zones
+        "type": "discover",
+        "partitions": [
+          {"partition": 1, "name": "Security Panel"}
+        ],
+        "zones": [
+          {"zone": 1, "type": "smoke", "name": "Smoke Detector"},
+          {"zone": 2, "type": "contact", "name": "Front Door"},
+          {"zone": 3, "type": "contact", "name": "Back Door"},
+          {"zone": 4, "type": "contact", "name": "Kitchen Door"},
+          {"zone": 5, "type": "contact", "name": "Kitchen Window"}
+        ]
+      }
+    },
+    // SmartThings Hub (optional - will be set by SmartThings SmartApp)
+    "notify": {
+      "address": "192.168.1.12",    // SmartThings Hub IP
+      "port": "39500"               // SmartThings Hub HTTP NOTIFY port - default is 39500
+    }
+}
+  
