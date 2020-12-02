@@ -1,4 +1,4 @@
-# DSC IT-100 (RS232) NodeJS Alarm and SmartThings
+# DSC IT-100 (RS232) NodeJS Alarm and Hubitat
 Credits
 -------
 I'm really grateful that very knowledgeable guys have shared their research and projects in github and forums.
@@ -11,18 +11,6 @@ This project was inspired in those samples:
  - https://github.com/yracine/DSC-Integration-with-Arduino-Mega-Shield-RS-232
 
 
-History
--------
-This is just one more variant available to make your DSCAlarm system Smart with SmartThings.
-
-The majority of those amazing projects available are using EnvisaLink board. If you already have one I suggest to you to use one of them.
-
-My favority project is the one using Arduino but unfortunately the SmartThing Shield is deprecated and no longer available in the market.
-
-I already have the DSC IT-100 board for that reason I decided to use it.
-
-The project is on top of Raspberry Pi running NodeJS and SmartThings HUB Callback.
-
 Prerequisites
 --------------
 * Compatible DSC Alarm System 
@@ -34,17 +22,16 @@ Required Software
 -----------------
 * Raspbian (latest)
 * NodeJS
-* SmartThing developer Access
+* Hubitat Hub
 
 Preparing Raspberry PI
 ----------------------
 Install the latest available Raspbian Linux on your Raspberry PI. Official link with step by step available [HERE](https://www.raspberrypi.org/documentation/installation/installing-images/).
 After you have installed Raspbian I would recommend update all available packets, just run "sudo apt-get update" then "sudo apt-get upgrade".
 
-Keep in mind the easyest way to implement this project is configuring a static IP address on your Raspberry Pi and also for the SmartThings HUB.
-The SmartThing HUB will send web request to NodeJS, your Raspberry Pi IP address will be configured during the Mobile App Setup using SmartThing app in your phone.
-That's how SmartThing HUB knows how to reach your Raspberry Pi. If you prefer you can just go to your DHCP in your house and reserv IP Address to you Raspberry PI and Smartthings HUB using MAC address.
-There is a really good step by step [HERE](http://thisdavej.com/beginners-guide-to-installing-node-js-on-a-raspberry-pi/) covering almost everything we need.
+Keep in mind the easyest way to implement this project is configuring a static IP address on your Raspberry Pi and also for the Hubitat HUB.
+The Hubitat HUB will send web request to NodeJS, your Raspberry Pi IP address will be configured in the Hubitat HUB portal.
+That's how Hubitat HUB knows how to reach your Raspberry Pi. If you prefer you can just go to your DHCP in your house and reserv IP Address to you Raspberry PI and Hubitat HUB using MAC address.
 In case you are using RaspberryPI Zero W Here is the link on how to install [HERE](https://oshlab.com/install-latest-node-js-raspberry-pi-3/)
 
 Now it's time to install NodeJS. Just type sudo "apt-get install nodejs".
@@ -101,15 +88,9 @@ Check if you can arm and disarm your alarm accessing the URLs that we have alrea
 
 If you reach at this point it means you are able to arm the alarm using the URLs above and you are ready to start preparing the code on Smartthings.
 
-Preparing SmartThing Code
+Preparing Hubitat Code
 --------------------------
-First you need to determine your shard location. Shard is where your SmartThing account is hosted. In order to figure it out access this link [HERE](https://community.smartthings.com/t/faq-how-to-find-out-what-shard-cloud-slice-ide-url-your-account-location-is-on/53923).
-Usually if your SmartThing account was created after september 2015 your shard will be: graph-na02-useast1.api.smartthings.com.
-
-Now lets access your SmartThing shard and login with your SmartThing account if everything is fine you will be able to see all yours SmartThings devices in the Menu "My Devices".
-Keep in mind that if your account is empty nothing will be listed.
-
-The SmartThings have 3 main files:
+The Hubitat have 3 main files:
  - DSCAlarmApp.groovy
  - DSCAlarmDeviceType.groovy
  - DSCContactDeviceType.groovy
@@ -118,8 +99,8 @@ The SmartThings have 3 main files:
 
 __DSCAlarmApp.groovy__:
 
-That's our SmartApp (Service Manager). This is where we handle the Web requests that NodeJS will send to SmartThings using HUB CallBack.
-Using your shard (SmartThing IDE Web Site) we will install your DSCAlarm Smpart App. Here is the steps:
+That's our SmartApp (Service Manager). This is where we handle the Web requests that NodeJS will send to Hubitat using HUB CallBack.
+Here is the steps:
  - Click on My SmartApps.
  - Click New SmartApp.
  - Click From Code.
@@ -129,7 +110,7 @@ Using your shard (SmartThing IDE Web Site) we will install your DSCAlarm Smpart 
 __DSCAlarmDeviceType.groovy__:
  
 That's our DSC Alarm Device type. 
-This is the Virtual Alarm device that will be present in your SmartThing Mobile App and also where you will be able to send commands to your alarm like Arm, Disarm.
+This is the Virtual Alarm device that will be present in your Hubitat HUB and also where you will be able to send commands to your alarm like Arm, Disarm.
 Using your shard (SmartThing IDE Web Site) we will install your DSCAlarm Device type. Here is the steps:
  - Click on My Device Handlers.
  - Click Create New Device Handler. 

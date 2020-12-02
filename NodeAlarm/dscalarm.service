@@ -3,13 +3,13 @@ Description=DSCAlarm
 After=network.target
 
 [Service]
-ExecStart=/home/pi/dscalarm/dscalarm.js
+ExecStart=/home/pi/NodeAlarmHubitat/NodeAlarm/dscalarm.js
 Restart=always
 User=pi
 Group=pi
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
-WorkingDirectory=/home/pi/dscalarm
+WorkingDirectory=/home/pi/NodeAlarmHubitat/NodeAlarm
 
 [Install]
 WantedBy=multi-user.target
