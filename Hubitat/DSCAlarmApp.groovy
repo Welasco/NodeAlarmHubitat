@@ -27,9 +27,9 @@ preferences {
 
 def page1() {
   dynamicPage(name: "page1", install: true, uninstall: true) {
-    section("SmartThings Hub") {
-      input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
-    }
+    // section("SmartThings Hub") {
+    //   input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
+    // }
     section("SmartThings Raspberry") {
       input "proxyAddress", "text", title: "Proxy Address", description: "(ie. 192.168.1.10)", required: true
       input "proxyPort", "text", title: "Proxy Port", description: "(ie. 3000)", required: true, defaultValue: "3000"
@@ -55,6 +55,7 @@ def installed() {
   writeLog("DSCAlarmSmartAppV2 - DSCInstalled with settings: ${settings}")
 	initialize()
   addDSCAlarmDeviceType()
+  updated()
 }
 
 def updated() {
@@ -91,8 +92,9 @@ private removeChildDevices() {
 }
 
 private removeZoneChildDevices() {
+    def deviceId = GetDSCAlarmID()
     getAllChildDevices().each { 
-        if(it.deviceNetworkId != 'dscalrpanel'){
+        if(it.deviceNetworkId != deviceId){
           deleteChildDevice(it.deviceNetworkId)
         }
       }
@@ -121,33 +123,16 @@ def alarmHandler(evt) {
 }
 
 def lanResponseHandler(evt) {
-    def map = stringToMap(evt.stringValue)
+    def map = parseLanMessage(evt)
+    //writeLog("DSCAlarmSmartAppV2 - Method lanResponseHandler: ${map}")
+    // def headers = getHttpHeaders(map.headers);
+    // def body = getHttpBody(map.body);
 
-    //verify that this message is from STNP IP:Port
-    //IP and Port are only set on HTTP GET response and we need the MAC
-    if (map.ip == convertIPtoHex(settings.proxyAddress) &&
-        map.port == convertPortToHex(settings.proxyPort)) {
-            if (map.mac) {
-            state.proxyMac = map.mac
-        }
-    }
-
-    //verify that this message is from STNP MAC
-    //MAC is set on both HTTP GET response and NOTIFY
-    if (map.mac != state.proxyMac) {
-        //return
-    }
-
-    def headers = getHttpHeaders(map.headers);
-    def body = getHttpBody(map.body);
-
-    //verify that this message is for this plugin
-    //if (headers.'stnp-plugin' != settings.pluginType) {
-        //return
-    //}
+    def headers = map.headers;
+    def body = map.data;      
 
     if (headers.'device' != 'dscalarm') {
-      writeLog("DSCAlarmSmartAppV2 - Received event ${evt.stringValue} but it didn't came from DSCAlarm")
+      writeLog("DSCAlarmSmartAppV2 - Received event ${evt} but it didn't came from DSCAlarm")
       writeLog("DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm headers:  ${headers}")
       writeLog("DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm body: ${body}")      
       return
@@ -193,7 +178,7 @@ private updateZoneDeviceType(String cmd) {
 }
 
 private updateAlarmDeviceType(String cmd) {
-	def alarmdeviceNetworkID = "dscalrpanel"
+	def alarmdeviceNetworkID = GetDSCAlarmID()
   def alarmdevice = getChildDevice(alarmdeviceNetworkID)
   if (alarmdevice) {
     alarmdevice.dscalarmparse("${cmd}")
@@ -237,17 +222,23 @@ private addChildDevices(zones) {
     def deviceId = 'dscalrzone'+it.zone
     if (!getChildDevice(deviceId)) {
       it.type = it.type.capitalize()
-      addChildDevice("DSCAlarmV2", "DSCAlarmV2 Zone "+it.type, deviceId, hostHub.id, ["name": it.name, label: it.name, completedSetup: true])
-      writeLog("DSCAlarmSmartAppV2 - Added zone device: ${deviceId}")
+      def d = addChildDevice("DSCAlarmV2", "DSCAlarmV2 Zone "+it.type, deviceId, ["name": it.name, label: it.name, completedSetup: true])
+      writeLog("DSCAlarmSmartAppV2 - Added zone device: DisplayName: ${d.displayName} - deviceId: ${deviceId}")
     }
   }
 }
 
 private addDSCAlarmDeviceType() {
-  def deviceId = 'dscalrpanel'
+  //def deviceId = 'dscalrpanel'
+
+  //def deviceIP = settings.proxyAddress
+  //def devicePort = settings.proxyPort
+  //def deviceSettings = deviceIP+":"+devicePort
+  def deviceId = GetDSCAlarmID()
   if (!getChildDevice(deviceId)) {
-    addChildDevice("DSCAlarmV2", "DSCAlarmV2 Alarm Panel", deviceId, hostHub.id, ["name": "DSCAlarmV2 Alarm Panel", label: "DSCAlarmV2 Alarm Panel", completedSetup: true])
-    writeLog("DSCAlarmSmartAppV2 - Added DSCAlarmDeviceType device: ${deviceId}")
+    def d = addChildDevice("DSCAlarmV2", "DSCAlarmV2 Alarm Panel", deviceId, ["name": "DSCAlarmV2 Alarm Panel", label: "DSCAlarmV2 Alarm Panel", completedSetup: true])
+    //def d = addChildDevice("TemperatureSensor", "Temperature Sensor", deviceIdhex, ["name": deviceSettings, label: deviceName, completedSetup: true])
+    writeLog("DSCAlarmSmartAppV2 - Added DSCAlarmDeviceType DisplayName: ${d.displayName} - deviceId: ${deviceId}")
   }
 }
 
@@ -256,12 +247,15 @@ private getProxyAddress() {
 }
 
 private getNotifyAddress() {
-  return settings.hostHub.localIP + ":" + settings.hostHub.localSrvPortTCP
+  //return settings.hostHub.localIP + ":" + settings.hostHub.localSrvPortTCP
+  def hub = location.hubs[0]
+  //writeLog("DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.localIP + " - localSrvPortTCP: " + hub.localSrvPortTCP)
+  writeLog("DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.getDataValue("localIP") + " - localSrvPortTCP: " + hub.getDataValue("localSrvPortTCP"))
+  return hub.getDataValue("localIP") + ":" + hub.getDataValue("localSrvPortTCP")
 }
 
 private sendCommand(path) {
-  if (settings.proxyAddress.length() == 0 ||
-    settings.proxyPort.length() == 0) {
+  if (settings.proxyAddress.length() == 0 || settings.proxyPort.length() == 0) {
     log.error "SmartThings Node Proxy configuration not set!"
     return
   }
@@ -272,7 +266,7 @@ private sendCommand(path) {
   headers.put("Content-Type", "application/json")
   headers.put("stnp-auth", settings.authCode)
 
-  def hubAction = new physicalgraph.device.HubAction(
+  def hubAction = new hubitat.device.HubAction(
       method: "GET",
       path: path,
       headers: headers
@@ -282,24 +276,37 @@ private sendCommand(path) {
 
 private getHttpHeaders(headers) {
   def obj = [:]
-  new String(headers.decodeBase64()).split("\r\n").each {param ->
+  writeLog("DSCAlarmSmartAppV2 - Method getHttpHeaders ${headers}")
+  // new String(headers.decodeBase64()).split("\r\n").each {param ->
+  //   def nameAndValue = param.split(":")
+  //   obj[nameAndValue[0]] = (nameAndValue.length == 1) ? "" : nameAndValue[1].trim()
+  // }
+  new String(headers).split("\r\n").each {param ->
     def nameAndValue = param.split(":")
     obj[nameAndValue[0]] = (nameAndValue.length == 1) ? "" : nameAndValue[1].trim()
-  }
+  }  
   return obj
 }
 
 private getHttpBody(body) {
+  writeLog("DSCAlarmSmartAppV2 - Method getHttpBody ${body}")
   def obj = null;
   if (body) {
     def slurper = new JsonSlurper()
-    obj = slurper.parseText(new String(body.decodeBase64()))
+    //obj = slurper.parseText(new String(body.decodeBase64()))
+    obj = slurper.parseText(body)
   }
   return obj
 }
 
 private String convertIPtoHex(ipAddress) {
   return ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join().toUpperCase()
+}
+
+private String GetDSCAlarmID(){
+    def deviceIP = settings.proxyAddress
+    def deviceId = deviceIP.tokenize( '.' )*.toInteger().asType( byte[] ).encodeHex().toString().toUpperCase()
+    return deviceId
 }
 
 private String convertPortToHex(port) {

@@ -2,9 +2,8 @@
  *  DSCAlarmDeviceType
  *
  *  Author: Victor Santana
- *   based on work by XXX
  *  
- *  Date: 2017-03-26
+ *  Date: 2020-12-02
  */
 
 
@@ -40,69 +39,6 @@ metadata {
         command "updatestatus"
         command "alarmsetdate"
     }
-
-        // UI tile definitions
-    tiles {
-        
-                standardTile("alarmStatus", "device.alarmStatus", width: 2, height: 2, canChangeIcon: false, canChangeBackground: false) {
-                        state "ready", label: 'Ready', action: "armAway", icon: "st.Home.home2", backgroundColor: "#ffffff"
-                        state "disarmed", label: 'Ready', action: "armAway", icon: "st.Home.home2", backgroundColor: "#ffffff"
-                        state "notready", label: 'Not Ready', icon: "st.Home.home2", backgroundColor: "#ffa81e"
-                        state "away", label: 'Away', action: "disarm", icon: "st.Home.home3", backgroundColor: "#add8e6"
-                        state "stay", label: 'Stay', action: "disarm", icon: "st.Home.home4", backgroundColor: "#f1d801"
-                        state "arming", label: 'Arming', action: "disarm", icon: "st.Home.home2", backgroundColor: "#B8B8B8"
-                        state "alarm", label: 'Alarm', action: "clear", icon: "st.Home.home2", backgroundColor: "#ff0000"
-                }
-                standardTile("away", "device.awaySwitch", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false) {
-                        state "on", label: "Away", action: "disarm", icon: "st.Home.home3", backgroundColor: "#add8e6"
-                        state "off", label: "Away", action: "armAway",icon: "st.Home.home3", backgroundColor: "#ffffff"
-                }
-                standardTile("stay", "device.staySwitch", width: 1, height: 1, canChangeIcon: false, canChangeBackground: false) {
-                        state "on", label: "Stay", action: "disarm", icon: "st.Home.home4", backgroundColor: "#f1d801"
-                        state "off", label: "Stay", action: "armStay",icon: "st.Home.home4", backgroundColor: "#ffffff"
-                }
-                standardTile("zone1", "device.zone1", width: 1, height: 1,inactiveLabel: false,  canChangeIcon: true, canChangeBackground: true) {
-                        state "zone1open", label:'doors', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone1closed", label:'doors', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                }
-                standardTile("zone2", "device.zone2", width: 1, height: 1,inactiveLabel: false, canChangeIcon:true, canChangeBackground: true) {
-                        state "zone2open", label:'So Din W', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone2closed", label:'So Din W', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                } 
-                standardTile("zone3", "device.zone3", width: 1, height: 1,inactiveLabel: false,canChangeIcon:true, canChangeBackground: true) {
-                        state "zone3open", label:'Ki Ro W', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone3closed", label:'Ki Ro W', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                }	
-                standardTile("zone4", "device.zone4", width: 1, height: 1, inactiveLabel: false,canChangeIcon:true, canChangeBackground: true) {
-                        state "zone4open", label:'Master', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone4closed", label:'Master', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                }				
-                standardTile("zone5", "device.zone5", width: 1, height: 1,inactiveLabel: false, canChangeIcon: true, canChangeBackground: true) {
-                        state "zone5open", label:'BY Door', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone5closed", label:'BY Door', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                }
-                standardTile("zone6", "device.zone6", width: 1, height: 1,inactiveLabel: false,canChangeIcon:true, canChangeBackground: true) {
-                        state "zone6open", label:'2ndFloor', icon: "st.contact.contact.open", backgroundColor: "#ffa81e"
-                        state "zone6closed", label:'2ndFloor', icon: "st.contact.contact.closed", backgroundColor: "#79b821"
-                }
-
-                standardTile("chime", "device.chime", width:1, height: 1, canChangeIcon: false, canChangeBackground: false) {
-                        state "chimeOff", label:'Chime', action:'chimeToggle', icon:"st.secondary.off", backgroundColor: "#ffffff"
-                        state "chimeOn", label:'', action:'chimeToggle', icon:"st.secondary.beep", backgroundColor: "#ffffff"
-                }
-                standardTile("panic", "device.panic", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
-                        state "panic", label:'Panic', action:"panic", icon:"st.alarm.alarm.alarm", backgroundColor:"#ff0000"
-                }
-                standardTile("alarmsetdate", "device.alarmsetdate", width: 1, height: 1, canChangeIcon: false, canChangeBackground: true) {
-                        state "alarmsetdate", label:'DateTime', action:"alarmsetdate", icon:"st.Office.office6"
-                }
-		        valueTile("systemStatus", "device.systemStatus", inactiveLabel: false,
-		 	               decoration: "flat", width: 3, height: 1) {
-			               state "default", label: '${currentValue}'
-		        }
-                main(["alarmStatus"])
-                details(["alarmStatus","away","stay","zone5","zone6","zone4","zone1","zone2","zone3","basementBedWindow", "chime","systemStatus","panic","alarmsetdate"])
-        }
 }
 
 
@@ -391,4 +327,11 @@ def clear() {
 def sendRaspberryCommand(String command) {
 	def path = "/api/$command"
     parent.sendCommand(path);
+}
+
+// This method must exist
+// it's used by hubitat to process the device message
+def parse(description) {
+    //parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Receive Lan Command ${description}")
+	parent.lanResponseHandler(description)
 }
