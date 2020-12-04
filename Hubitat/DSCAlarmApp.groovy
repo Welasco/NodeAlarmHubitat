@@ -78,7 +78,10 @@ def updated() {
 
 def initialize() {
     subscribe(location, null, lanResponseHandler, [filterEvents:false])
-    subscribe(location, "alarmSystemStatus", alarmHandler)
+    //subscribe(location, "alarmSystemStatus", alarmHandler)
+    subscribe(location, "hsmStatus", alarmHandler)
+    subscribe(location, "hsmRules", alarmHandler)
+    subscribe (location, "hsmAlerts", alertHandler)
     writeLog("DSCAlarmSmartAppV2 - Initialize")
 }
 
@@ -102,6 +105,7 @@ private removeZoneChildDevices() {
 }
 
 def alarmHandler(evt) {
+  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
   if (!settings.enableSHM) {
     return
   }
@@ -109,20 +113,36 @@ def alarmHandler(evt) {
   if (state.alarmSystemStatus == evt.value) {
     return
   }
-
   state.alarmSystemStatus = evt.value
-  if (evt.value == "stay") {
+
+  if (evt.value == "armedHome") {
     sendCommand('/api/alarmArmStay');
   }
-  if (evt.value == "away") {
+  if (evt.value == "armedNight") {
+    sendCommand('/api/alarmArmStay');
+  }  
+  if (evt.value == "armedAway") {
     sendCommand('/api/alarmArmAway');
   }
-  if (evt.value == "off") {
+  if (evt.value == "disarmed") {
     sendCommand('/api/alarmDisarm');
   }
+  if (evt.value == "allDisarmed") {
+    sendCommand('/api/alarmDisarm');
+  }  
+}
+
+def alarmHandlerhsmRules(evt){
+  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmRules: ${evt} ${evt.value} ${evt.descriptionText}")
+
+}
+
+def alarmHandlerhsmAlerts(evt){
+  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmAlerts: ${evt} ${evt.value} ${evt.descriptionText}")
 }
 
 def lanResponseHandler(evt) {
+  try{
     def map = parseLanMessage(evt)
     //writeLog("DSCAlarmSmartAppV2 - Method lanResponseHandler: ${map}")
     // def headers = getHttpHeaders(map.headers);
@@ -142,6 +162,11 @@ def lanResponseHandler(evt) {
     writeLog("DSCAlarmSmartAppV2 - Received event headers:  ${headers}")
     writeLog("DSCAlarmSmartAppV2 - Received event body: ${body}")
     processEvent(body)
+  }
+  catch(MissingMethodException){
+		// these are events with description: null and data: null, so we'll just pass.
+		pass
+  }
 }
 
 // Check if the received event is for descover or update zone/alarm status
@@ -193,17 +218,17 @@ private updateAlarmSystemStatus(partitionstatus) {
 
   def lastAlarmSystemStatus = state.alarmSystemStatus
   if (partitionstatus == "armedstay") {
-    state.alarmSystemStatus = "stay"
+    state.alarmSystemStatus = "armHome"
   }
   if (partitionstatus == "armedaway") {
-    state.alarmSystemStatus = "away"
+    state.alarmSystemStatus = "armAway"
   }
   if (partitionstatus == "ready") {
-    state.alarmSystemStatus = "off"
+    state.alarmSystemStatus = "disarm"
   }
 
   if (lastAlarmSystemStatus != state.alarmSystemStatus) {
-    sendLocationEvent(name: "alarmSystemStatus", value: state.alarmSystemStatus)
+    sendLocationEvent(name: "hsmSetArm", value: state.alarmSystemStatus)
   }
 }
 
