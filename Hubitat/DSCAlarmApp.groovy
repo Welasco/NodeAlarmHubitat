@@ -63,6 +63,7 @@ def updated() {
     removeZoneChildDevices()
   }  
   writeLog("DSCAlarmSmartAppV2 - Updated with settings: ${settings}")
+  updateDSCAlarmDeviceType()
 	//unsubscribe()
 	initialize()
   sendCommand('/subscribe/'+getNotifyAddress())
@@ -72,7 +73,7 @@ def updated() {
     runIn(5, discoverChildDevices)
     runIn(15, alarmUpdate)
     settings.enableDiscovery = false
-  }  
+  }
   
 }
 
@@ -265,6 +266,16 @@ private addDSCAlarmDeviceType() {
     //def d = addChildDevice("TemperatureSensor", "Temperature Sensor", deviceIdhex, ["name": deviceSettings, label: deviceName, completedSetup: true])
     writeLog("DSCAlarmSmartAppV2 - Added DSCAlarmDeviceType DisplayName: ${d.displayName} - deviceId: ${deviceId}")
   }
+}
+
+private updateDSCAlarmDeviceType() {
+    def deviceId = GetDSCAlarmID()
+    getAllChildDevices().each { 
+        if(it.name == "DSCAlarmV2 Alarm Panel"){
+          it.setDeviceNetworkId(deviceId)
+        }
+      }
+    writeLog("DSCAlarmSmartAppV2 - Updating DSCAlarmV2 Alarm Panel DeviceNetworkId: ${deviceId}")
 }
 
 private getProxyAddress() {
