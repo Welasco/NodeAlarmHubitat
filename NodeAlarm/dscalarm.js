@@ -68,11 +68,6 @@ var linuxCom = nconf.get('dscalarm:linuxcom');;
 var alarmPassword = nconf.get('dscalarm:alarmpassword');
 var baudRate = nconf.get('dscalarm:baudRate');
 
-// Used to fix a bug when alarm receive armStay twice in the second response it says armAway
-// it breaks the logic of the HSM
-// Expected values: ArmAway, ArmStay
-var alarmStatus = ""
-
 var httpport = nconf.get('httpport');
 
 // Detecting the OS Version to setup the right com port useful for debugging
@@ -287,10 +282,6 @@ function alarmArm() {
 
 // Send the ArmAway command to Alarm
 function alarmArmAway() {
-    if (alarmStatus == "ArmAway") {
-        return
-    }
-    alarmStatus = "ArmAway"
     var cmd = "0301";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
@@ -298,10 +289,6 @@ function alarmArmAway() {
 
 // Send the ArmStay command to Alarm
 function alarmArmStay() {
-    if (alarmStatus == "ArmStay") {
-        return
-    }
-    alarmStatus = "ArmStay"    
     var cmd = "0321";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
