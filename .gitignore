@@ -250,5 +250,8 @@ typings/
 
 package-lock.json
 config.json.working
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 NodeAlarm/config/
