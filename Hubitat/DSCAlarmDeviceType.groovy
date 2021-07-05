@@ -22,8 +22,8 @@ metadata {
         attribute "zone4", "string"
         attribute "zone5", "string"
         attribute "zone6", "string"
-        attribute "switchAway", "string"
-        attribute "switchStay", "string"
+        attribute "awaySwitch", "string"
+        attribute "staySwitch", "string"
         attribute "panic", "string"
         attribute "systemStatus", "string"
 

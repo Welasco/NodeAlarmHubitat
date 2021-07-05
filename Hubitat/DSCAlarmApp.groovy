@@ -106,7 +106,7 @@ private removeZoneChildDevices() {
 }
 
 def alarmHandler(evt) {
-  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
+  //writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
   if (!settings.enableSHM) {
     return
   }
@@ -160,8 +160,8 @@ def lanResponseHandler(evt) {
     }
 
     //log.trace "Honeywell Security event: ${evt.stringValue}"
-    writeLog("DSCAlarmSmartAppV2 - Received event headers:  ${headers}")
-    writeLog("DSCAlarmSmartAppV2 - Received event body: ${body}")
+    //writeLog("DSCAlarmSmartAppV2 - Received event headers:  ${headers}")
+    //writeLog("DSCAlarmSmartAppV2 - Received event body: ${body}")
     processEvent(body)
   }
   catch(MissingMethodException){
@@ -170,7 +170,7 @@ def lanResponseHandler(evt) {
   }
 }
 
-// Check if the received event is for descover or update zone/alarm status
+// Check if the received event is for discover or update zone/alarm status
 private processEvent(evt) {
   if (evt.type == "discover") {
     addChildDevices(evt.zones)
@@ -292,7 +292,7 @@ private getNotifyAddress() {
 
 private sendCommand(path) {
   if (settings.proxyAddress.length() == 0 || settings.proxyPort.length() == 0) {
-    log.error "SmartThings Node Proxy configuration not set!"
+    log.error "Hubitat's Node Proxy configuration not set!"
     return
   }
 

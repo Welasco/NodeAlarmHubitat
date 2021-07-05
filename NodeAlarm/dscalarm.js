@@ -113,6 +113,22 @@ app.get("/api/alarmArmStay", function (req, res) {
     res.end();
 });
 
+/////////////////////////////////////////////////////////
+// Used to arm the alarm in Stay Mode but Night
+app.get("/api/alarmArmNight", function (req, res) {
+    alarmArmNight();
+    //res.send("200 OK");
+    res.end();
+});
+
+// Used to enable descriptive control 
+app.get("/api/descriptiveControl", function (req, res) {
+    descriptiveControl();
+    res.end();
+});
+
+/////////////////////////////////////////////////////////
+
 // Used to disarm the alarm (need a password)
 app.get("/api/alarmDisarm", function (req, res) {
     alarmDisarm();
@@ -125,11 +141,18 @@ app.get("/api/alarmChimeToggle", function (req, res) {
     res.end();
 });
 
-// Used to activate Panic
+// Used to activate Panic Siren
 app.get("/api/alarmPanic", function (req, res) {
     alarmPanic();
     res.end();
 });
+
+// Used to activate Fire Siren
+app.get("/api/alarmFire", function (req, res) {
+    alarmFire();
+    res.end();
+});
+
 
 // Used to Set Alarm Date and Time
 app.get("/api/alarmSetDate", function (req, res) {
@@ -159,7 +182,7 @@ app.get('/subscribe/:host', function (req, res) {
       }
     });
     res.end();
-    logger("Subscribe","SmartThings HUB IpAddress: "+parts[0] +" Port: "+ parts[1]);
+    logger("Subscribe","Hubitat IpAddress: "+parts[0] +" Port: "+ parts[1]);
 });
 
 // Used to save the DSCAlarm password comming from SmartThings App
@@ -294,11 +317,29 @@ function alarmArmStay() {
     sendToSerial(cmd);
 }
 
+//////////////////////////////////////
+// Send the ArmNight command to Alarm
+function alarmArmNight() {
+    //if (alarmStatus == "ArmNight") {
+      //  return
+    //}
+
+
+    var cmd = "0311";
+    cmd = appendChecksum(cmd);
+    sendToSerial(cmd);
+}
+/////////////////////////////////////
+
+
+
+
 // Send the Disarm command to Alarm
 function alarmDisarm() {
     var cmd = "0401" + alarmPassword + "00";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
+
 }
 
 // Send the Break command to Alarm
@@ -317,12 +358,29 @@ function alarmChimeToggle() {
     setTimeout(alarmSendBreak, 1800);
 }
 
-// Send the Activate Panic command to Alarm
+// Send the Activate Panic Siren
 function alarmPanic() {
     var cmd = "0603";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
+
+// Send the Activate Fire Siren
+function alarmFire() {
+    var cmd = "0601";
+    cmd = appendChecksum(cmd);
+    sendToSerial(cmd);
+}
+
+// Send the descriptiveControl to partition to enable verbose mode.
+function descriptiveControl() {
+    var cmd = "0501";
+    cmd = appendChecksum(cmd);
+    sendToSerial(cmd);
+}
+
+
+
 
 // This command will send the code to the alarm when ever the alarm ask for it with a 900
 function alarmSendCode() {
@@ -437,6 +495,52 @@ function appendChecksum(data) {
 // We will analise the received data and send the request to SmartThing to control the app
 // Based on what we have received we will change the Device Alarm and Zone (Open/Close Sensor) on SmartThing
 // Alarm Documentation - http://cms.dsc.com/download.php?t=1&id=16238
+//500 previous command received
+//501 command error
+//502 system error
+//601 zone alarm
+//602 zone restore
+//603 zone tamper
+//604 zone tamper restore
+//605 zone fault
+//606 zone fault restore
+//609 zone open
+//610 zone close
+//650 partition ready
+//651 partition not ready
+//652 Partition Armed, but also is a descriptive arming (i.e AWAY, STAY, ZERO-ENTRY-AWAY or ZERO-ENTRY-STAY)
+//653 Partition is ready, but to force alarm
+//654 Partition is in alarm
+//655 patition disarmed
+//656 partition arming/exit delay
+//657 partition is entry delay	                
+//658 keyboard lockout, too many attempts
+//660 command in progress
+//670 invalid code
+//671 funct not avail
+//672 fail to arm
+//673 partition is busy
+//700 user closing, partition has been armed by user at the end of exit delay
+//701 special closing indicates partition was armed quick arm, auto arm, keyswitch, DLS software
+//702 partial closing
+//750 disarm by a user
+//751 special opening, indicates partition was disarmed quick arm, auto arm, keyswitch, DLS software
+//800 low batt
+//801 restored low batt
+//802 lost power
+//803 power restored
+//806 siren cables had been tampered
+//807 siren cable issue restored
+//816 buffer full
+//829 system tamper
+//830 system tamper restore
+//900 code required
+//
+////////////////////////////////
+//codes suffix
+//AR-3 system is armed
+//AR-2 Arming/exit delay
+//
 ///////////////////////////////////////////
 function parseReceivedData(data) {
     logger("SerialPort","Received Serial data: " + data);
@@ -471,11 +575,11 @@ function parseReceivedData(data) {
             var msg = ("AR-2");
             sendSmartThingMsg(msg);
         }
-        else if (cmd == "652") {
-            var msg = ("AR-1" + cmdfullstr.charAt(3) + cmdfullstr.charAt(4));
+        else if ((cmd == "652") || (cmd == "700")) {
+            var msg = ("AR-3");
             sendSmartThingMsg(msg);
         }
-        else if (cmd == "655") {
+        else if ((cmd == "655") || (cmd == "750")) {
             var msg = ("AR-0");
             sendSmartThingMsg(msg);
             var msg = ("AL-0");
@@ -484,6 +588,7 @@ function parseReceivedData(data) {
         else if (cmd == "654") {
             var msg = ("AL-1");
             sendSmartThingMsg(msg);
+
         }
         else if (cmd == "900") {
             alarmSendCode();
@@ -504,6 +609,10 @@ function parseReceivedData(data) {
             var msg = ("SY-" + cmd);
             sendSmartThingMsg(msg);
         }
+        else if (cmd == "659") {
+            var msg = ("SY-" + cmd);
+            sendSmartThingMsg(msg);
+        }        
         else if (cmd == "670") {
             var msg = ("SY-" + cmd);
             sendSmartThingMsg(msg);
@@ -512,6 +621,10 @@ function parseReceivedData(data) {
             var msg = ("SY-" + cmd);
             sendSmartThingMsg(msg);
         }
+        else if (cmd == "673") {
+            var msg = ("SY-" + cmd);
+            sendSmartThingMsg(msg);
+        }        
         else if (cmd == "802") {
             var msg = ("SY-" + cmd);
             sendSmartThingMsg(msg);
@@ -584,6 +697,24 @@ function parseReceivedData(data) {
             var msg = ("SY-" + cmd);
             sendSmartThingMsg(msg);
         }
+        else if (cmd == "500") {
+            if ((cmdfullstr.substr(0, 8)) == "5000332B") {
+                var msg = ("AR-112");
+                sendSmartThingMsg(msg);
+            }
+            else if ((cmdfullstr.substr(0, 8)) == "50003129") {
+                var msg = ("AR-114");
+                sendSmartThingMsg(msg);
+            }
+            else if ((cmdfullstr.substr(0, 8)) == "5000322A") {
+                var msg = ("AR-110");
+                sendSmartThingMsg(msg);
+            }
+            else if ((cmdfullstr.substr(0, 8)) == "50004029") {
+              var msg = ("AR-0");
+              sendSmartThingMsg(msg);
+            }
+        }        
         else {
 
         }
@@ -591,19 +722,19 @@ function parseReceivedData(data) {
 }
 
 ///////////////////////////////////////////
-// Function to send alarm msgs to SmartThing
+// Function to send alarm msgs to Hubitat
 ///////////////////////////////////////////
 function sendSmartThingMsg(command) {
     var msg = JSON.stringify({type: 'zone', command: command});
     notify(msg);
-    logger("SendMartthingsMsg","Sending SmartThing comand: " + msg);
+    logger("MsgSentHubitat","Sending Hubitat command: " + msg);
 }
 
 ///////////////////////////////////////////
-// Send HTTP callback to SmartThings HUB
+// Send HTTP callback to Hubitat HUB
 ///////////////////////////////////////////
 /**
- * Callback to the SmartThings Hub via HTTP NOTIFY
+ * Callback to the Hubitat Hub via HTTP NOTIFY
  * @param {String} data - The HTTP message body
  */
 var notify = function(data) {
