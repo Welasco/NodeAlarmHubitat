@@ -30,6 +30,6 @@ def updatedevicezone(String cmd) {
 	}
 	else if (cmd.substring(3,9).substring(0,3) == "610"){
 		sendEvent (name: "contact", value: "closed")
-        parent.writeLog("info","DSC Zone ${device} value: Closed")
+    parent.writeLog("info","DSC Zone ${device} value: Closed")
 	}
 }

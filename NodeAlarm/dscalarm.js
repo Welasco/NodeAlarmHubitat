@@ -311,14 +311,14 @@ function alarmArm() {
 
 // Send the ArmAway command to Alarm
 function alarmArmAway() {
-    var cmd = "0301";
+    var cmd = "0321";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
 
 // Send the ArmStay command to Alarm
 function alarmArmStay() {
-    var cmd = "0321";
+    var cmd = "0311";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
@@ -326,12 +326,7 @@ function alarmArmStay() {
 //////////////////////////////////////
 // Send the ArmNight command to Alarm
 function alarmArmNight() {
-    //if (alarmStatus == "ArmNight") {
-      //  return
-    //}
-
-
-    var cmd = "0321";
+    var cmd = "0311";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }

@@ -34,7 +34,7 @@ metadata {
         command "armNight"
         command "disarm"
         command "chimeToggle"
-        command "alarmsetdate"
+        command "alarmSetDate"
     }
 }
 
