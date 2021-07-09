@@ -215,7 +215,7 @@ private updateAlarmDeviceType(String cmd) {
 
 
 private updateAlarmSystemStatus(partitionstatus) {
-    if (!settings.enableSHM) {
+  if (!settings.enableSHM) {
     return
   }
   def lastAlarmSystemStatus = state.alarmSystemStatus

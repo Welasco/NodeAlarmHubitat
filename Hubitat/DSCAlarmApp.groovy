@@ -52,7 +52,7 @@ def page1() {
 }
 
 def installed() {
-  writeLog("DSCAlarmSmartAppV2 - DSCInstalled with settings: ${settings}")
+  writeLog("info","DSCAlarmSmartAppV2 - DSCInstalled with settings: ${settings}")
 	initialize()
   addDSCAlarmDeviceType()
   updated()
@@ -62,7 +62,7 @@ def updated() {
   if (settings.enableDiscovery) {
     removeZoneChildDevices()
   }  
-  writeLog("DSCAlarmSmartAppV2 - Updated with settings: ${settings}")
+  writeLog("info","DSCAlarmSmartAppV2 - Updated with settings: ${settings}")
   updateDSCAlarmDeviceType()
 	//unsubscribe()
 	initialize()
@@ -83,7 +83,7 @@ def initialize() {
     subscribe(location, "hsmStatus", alarmHandler)
     subscribe(location, "hsmRules", alarmHandler)
     subscribe (location, "hsmAlerts", alertHandler)
-    writeLog("DSCAlarmSmartAppV2 - Initialize")
+    writeLog("info","DSCAlarmSmartAppV2 - Initialize")
 }
 
 def uninstalled() {
@@ -92,7 +92,7 @@ def uninstalled() {
 
 private removeChildDevices() {
     getAllChildDevices().each { deleteChildDevice(it.deviceNetworkId) }
-    writeLog("DSCAlarmSmartAppV2 - Removing all child devices")
+    writeLog("info","DSCAlarmSmartAppV2 - Removing all child devices")
 }
 
 private removeZoneChildDevices() {
@@ -102,20 +102,17 @@ private removeZoneChildDevices() {
           deleteChildDevice(it.deviceNetworkId)
         }
       }
-    writeLog("DSCAlarmSmartAppV2 - Removing all Zone child devices")
+    writeLog("info","DSCAlarmSmartAppV2 - Removing all Zone child devices")
 }
 
 def alarmHandler(evt) {
-  //writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
+  writeLog("debug","DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
   if (!settings.enableSHM) {
     return
   }
 
-  // if (state.alarmSystemStatus == evt.value) {
-  //   return
-  // }
   state.alarmSystemStatus = evt.value
-
+  writeLog("debug","DSCAlarmSmartAppV2 - HSM current status per DSCAlarmSmartAppV2 - ${state.alarmSystemStatus}")
   if (evt.value == "armedHome") {
     sendCommand('/api/alarmArmStay');
   }
@@ -134,18 +131,18 @@ def alarmHandler(evt) {
 }
 
 def alarmHandlerhsmRules(evt){
-  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmRules: ${evt} ${evt.value} ${evt.descriptionText}")
+  writeLog("debug","DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmRules: ${evt} ${evt.value} ${evt.descriptionText}")
 
 }
 
 def alarmHandlerhsmAlerts(evt){
-  writeLog("DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmAlerts: ${evt} ${evt.value} ${evt.descriptionText}")
+  writeLog("debug","DSCAlarmSmartAppV2 - Method HSM alarmHandlerhsmAlerts: ${evt} ${evt.value} ${evt.descriptionText}")
 }
 
 def lanResponseHandler(evt) {
   try{
     def map = parseLanMessage(evt)
-    //writeLog("DSCAlarmSmartAppV2 - Method lanResponseHandler: ${map}")
+    //writeLog("debug","DSCAlarmSmartAppV2 - Method lanResponseHandler: ${map}")
     // def headers = getHttpHeaders(map.headers);
     // def body = getHttpBody(map.body);
 
@@ -153,15 +150,15 @@ def lanResponseHandler(evt) {
     def body = map.data;      
 
     if (headers.'device' != 'dscalarm') {
-      writeLog("DSCAlarmSmartAppV2 - Received event ${evt} but it didn't came from DSCAlarm")
-      writeLog("DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm headers:  ${headers}")
-      writeLog("DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm body: ${body}")      
+      writeLog("debug","DSCAlarmSmartAppV2 - Received event ${evt} but it didn't came from DSCAlarm")
+      writeLog("debug","DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm headers:  ${headers}")
+      writeLog("debug","DSCAlarmSmartAppV2 - Received event but it didn't came from DSCAlarm body: ${body}")      
       return
     }
 
     //log.trace "Honeywell Security event: ${evt.stringValue}"
-    //writeLog("DSCAlarmSmartAppV2 - Received event headers:  ${headers}")
-    //writeLog("DSCAlarmSmartAppV2 - Received event body: ${body}")
+    //writeLog("debug","DSCAlarmSmartAppV2 - Received event headers:  ${headers}")
+    //writeLog("debug","DSCAlarmSmartAppV2 - Received event body: ${body}")
     processEvent(body)
   }
   catch(MissingMethodException){
@@ -181,7 +178,7 @@ private processEvent(evt) {
 }
 
 def parserDSCCommand(cmd) {
-    writeLog("DSCAlarmSmartAppV2 - Received Alarm Command: ${cmd}")
+    writeLog("debug","DSCAlarmSmartAppV2 - Received Alarm Command: ${cmd}")
     if(cmd.length() >= 4){
     	if(cmd.substring(0,2) == "ZN"){
         	updateZoneDeviceType(cmd)
@@ -199,7 +196,7 @@ private updateZoneDeviceType(String cmd) {
   def zonedevice = getChildDevice(zonedeviceNetworkID)
   if (zonedevice) {
     zonedevice.updatedevicezone("${cmd}")
-    writeLog("DSCAlarmSmartAppV2 - Updating zone ${zonedeviceNetworkID} using Command: ${cmd}")
+    writeLog("debug","DSCAlarmSmartAppV2 - Updating zone ${zonedeviceNetworkID} using Command: ${cmd}")
   }
 }
 
@@ -208,7 +205,7 @@ private updateAlarmDeviceType(String cmd) {
   def alarmdevice = getChildDevice(alarmdeviceNetworkID)
   if (alarmdevice) {
     alarmdevice.dscalarmparse("${cmd}")
-    writeLog("DSCAlarmSmartAppV2 - Updating Alarm Device ${alarmdeviceNetworkID} using Command: ${cmd}")
+    writeLog("debug","DSCAlarmSmartAppV2 - Updating Alarm Device ${alarmdeviceNetworkID} using Command: ${cmd}")
   }
 }
 
@@ -238,12 +235,12 @@ private updateAlarmSystemStatus(partitionstatus) {
 
 def alarmUpdate() {
   sendCommand('/api/alarmUpdate')
-  writeLog("DSCAlarmSmartAppV2 - Sending Alarm Update request")
+  writeLog("info","DSCAlarmSmartAppV2 - Sending Alarm Update request")
 }
 
 def discoverChildDevices() {
   sendCommand('/discover')
-  writeLog("DSCAlarmSmartAppV2 - Sending discovery request")
+  writeLog("info","DSCAlarmSmartAppV2 - Sending discovery request")
 }
 
 private addChildDevices(zones) {
@@ -252,7 +249,7 @@ private addChildDevices(zones) {
     if (!getChildDevice(deviceId)) {
       it.type = it.type.capitalize()
       def d = addChildDevice("DSCAlarmV2", "DSCAlarmV2 Zone "+it.type, deviceId, ["name": it.name, label: it.name, completedSetup: true])
-      writeLog("DSCAlarmSmartAppV2 - Added zone device: DisplayName: ${d.displayName} - deviceId: ${deviceId}")
+      writeLog("info","DSCAlarmSmartAppV2 - Added zone device: DisplayName: ${d.displayName} - deviceId: ${deviceId}")
     }
   }
 }
@@ -267,7 +264,7 @@ private addDSCAlarmDeviceType() {
   if (!getChildDevice(deviceId)) {
     def d = addChildDevice("DSCAlarmV2", "DSCAlarmV2 Alarm Panel", deviceId, ["name": "DSCAlarmV2 Alarm Panel", label: "DSCAlarmV2 Alarm Panel", completedSetup: true])
     //def d = addChildDevice("TemperatureSensor", "Temperature Sensor", deviceIdhex, ["name": deviceSettings, label: deviceName, completedSetup: true])
-    writeLog("DSCAlarmSmartAppV2 - Added DSCAlarmDeviceType DisplayName: ${d.displayName} - deviceId: ${deviceId}")
+    writeLog("info","DSCAlarmSmartAppV2 - Added DSCAlarmDeviceType DisplayName: ${d.displayName} - deviceId: ${deviceId}")
   }
 }
 
@@ -278,7 +275,7 @@ private updateDSCAlarmDeviceType() {
           it.setDeviceNetworkId(deviceId)
         }
       }
-    writeLog("DSCAlarmSmartAppV2 - Updating DSCAlarmV2 Alarm Panel DeviceNetworkId: ${deviceId}")
+    writeLog("debug","DSCAlarmSmartAppV2 - Updating DSCAlarmV2 Alarm Panel DeviceNetworkId: ${deviceId}")
 }
 
 private getProxyAddress() {
@@ -288,8 +285,8 @@ private getProxyAddress() {
 private getNotifyAddress() {
   //return settings.hostHub.localIP + ":" + settings.hostHub.localSrvPortTCP
   def hub = location.hubs[0]
-  //writeLog("DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.localIP + " - localSrvPortTCP: " + hub.localSrvPortTCP)
-  writeLog("DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.getDataValue("localIP") + " - localSrvPortTCP: " + hub.getDataValue("localSrvPortTCP"))
+  //writeLog("debug","DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.localIP + " - localSrvPortTCP: " + hub.localSrvPortTCP)
+  writeLog("debug","DSCAlarmSmartAppV2 - Method getNotifyAddress called: localIP: " + hub.getDataValue("localIP") + " - localSrvPortTCP: " + hub.getDataValue("localSrvPortTCP"))
   return hub.getDataValue("localIP") + ":" + hub.getDataValue("localSrvPortTCP")
 }
 
@@ -315,7 +312,7 @@ private sendCommand(path) {
 
 private getHttpHeaders(headers) {
   def obj = [:]
-  writeLog("DSCAlarmSmartAppV2 - Method getHttpHeaders ${headers}")
+  writeLog("debug","DSCAlarmSmartAppV2 - Method getHttpHeaders ${headers}")
   // new String(headers.decodeBase64()).split("\r\n").each {param ->
   //   def nameAndValue = param.split(":")
   //   obj[nameAndValue[0]] = (nameAndValue.length == 1) ? "" : nameAndValue[1].trim()
@@ -328,7 +325,7 @@ private getHttpHeaders(headers) {
 }
 
 private getHttpBody(body) {
-  writeLog("DSCAlarmSmartAppV2 - Method getHttpBody ${body}")
+  writeLog("debug","DSCAlarmSmartAppV2 - Method getHttpBody ${body}")
   def obj = null;
   if (body) {
     def slurper = new JsonSlurper()
@@ -352,9 +349,14 @@ private String convertPortToHex(port) {
   return port.toString().format( '%04x', port.toInteger() ).toUpperCase()
 }
 
-private writeLog(message)
+private writeLog(type,message)
 {
-  if(idelog){
-    log.debug "${message}"
+  if(type == "debug"){
+    if(idelog){
+      log.debug "${message}"
+    }
+  }
+  else{
+    log.info "${message}"
   }
 }

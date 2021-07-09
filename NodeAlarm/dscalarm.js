@@ -153,6 +153,12 @@ app.get("/api/alarmFire", function (req, res) {
     res.end();
 });
 
+// Used to activate Ambulance
+app.get("/api/alarmAmbulance", function (req, res) {
+    alarmAmbulance();
+    res.end();
+});
+
 
 // Used to Set Alarm Date and Time
 app.get("/api/alarmSetDate", function (req, res) {
@@ -361,6 +367,13 @@ function alarmChimeToggle() {
 // Send the Activate Panic Siren
 function alarmPanic() {
     var cmd = "0603";
+    cmd = appendChecksum(cmd);
+    sendToSerial(cmd);
+}
+
+// Send the Activate Ambulance
+function alarmAmbulance() {
+    var cmd = "0602";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
