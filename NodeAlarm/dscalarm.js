@@ -325,7 +325,7 @@ function alarmArmNight() {
     //}
 
 
-    var cmd = "0311";
+    var cmd = "0321";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }

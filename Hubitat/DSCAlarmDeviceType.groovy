@@ -14,6 +14,7 @@ metadata {
         capability "Switch"
         capability "Motion Sensor"
         capability "Contact Sensor"
+        capability "Refresh"
         
         attribute "alarmStatus", "string"
         attribute "zone1", "string"     
@@ -23,20 +24,23 @@ metadata {
         attribute "zone5", "string"
         attribute "zone6", "string"
         attribute "awaySwitch", "string"
-        attribute "staySwitch", "string"
+        attribute "homeSwitch", "string"
+        attribute "nightSwitch", "string"
         attribute "panic", "string"
         attribute "systemStatus", "string"
+        attribute "chime", "string"
 
         command "armAway"
-        command "armStay"
+        command "armHome"
+        command "armNight"
         command "disarm"
-        command "clear"
-        command "update"
+        //command "clear"
+        //command "update"
         command "chimeToggle"
-        command "panic"
-        command "away"
-        command "dscalarmparse"
-        command "updatestatus"
+        // command "panic"
+        // command "away"
+        // command "dscalarmparse"
+        // command "updatestatus"
         command "alarmsetdate"
     }
 }
@@ -52,68 +56,93 @@ def dscalarmparse(String description) {
             if (msg[3] == "0") {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm notready")
                 sendEvent(name: "alarmStatus", value: "notready")
-                // When status is "Not Ready" we cannot arm
+                sendEvent(name: "systemStatus", value: "notReady")
                 sendEvent(name: "awaySwitch", value: "off")
                 sendEvent(name: "staySwitch", value: "off")
+                sendEvent(name: "nightSwitch", value: "off")
                 sendEvent(name: "contact", value: "open")
             }
             else {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm ready")
-                parent.updateAlarmSystemStatus("ready")
+                //parent.updateAlarmSystemStatus("ready")
                 sendEvent(name: "alarmStatus", value: "ready")
-                // When status is "Ready" we can arm
                 sendEvent(name: "awaySwitch", value: "off")
                 sendEvent(name: "staySwitch", value: "off")
+                sendEvent(name: "nightSwitch", value: "off")
                 sendEvent(name: "switch", value: "off")
-                sendEvent(name: "panic", value: "off")
                 sendEvent(name: "contact", value: "open")
-                sendEvent(name: "systemStatus", value: "System Status:No events")
+                sendEvent(name: "systemStatus", value: "noEvents")
             }
         // Process arm update
         } else if ( msg.substring(0, 2) == "AR" ) {
             if (msg[3] == "0") {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm disarmed")
-                parent.updateAlarmSystemStatus("ready")
+                parent.updateAlarmSystemStatus("disarmed")
+                sendEvent(name: "systemStatus", value: "disarmed")
                 sendEvent(name: "alarmStatus", value: "disarmed") 
                 sendEvent(name: "awaySwitch", value: "off")
                 sendEvent(name: "staySwitch", value: "off")
+                sendEvent(name: "nightSwitch", value: "off")
                 sendEvent(name: "switch", value: "off")
                 sendEvent(name: "contact", value: "open")
             }
             else if (msg[3] == "1") {
                 if (msg[5] == "0") {
                     parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Away")
-                    parent.updateAlarmSystemStatus("armedaway")
-                    sendEvent(name: "alarmStatus", value: "away")
+                    parent.updateAlarmSystemStatus("armAway")
+                    sendEvent(name: "alarmStatus", value: "armAway")
                     sendEvent(name: "awaySwitch", value: "on")
                     sendEvent(name: "staySwitch", value: "off")
+                    sendEvent(name: "nightSwitch", value: "off")
                     sendEvent(name: "switch", value: "on")
                     sendEvent(name: "contact", value: "closed")
                 }
                 else if (msg[5] == "2") {
                     parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Stay")
-                    parent.updateAlarmSystemStatus("armedstay")
-                    sendEvent(name: "alarmStatus", value: "stay")
+                    parent.updateAlarmSystemStatus("armHome")
+                    sendEvent(name: "alarmStatus", value: "armHome")
                     sendEvent(name: "awaySwitch", value: "off")
                     sendEvent(name: "staySwitch", value: "on")
+                    sendEvent(name: "nightSwitch", value: "off")
                     sendEvent(name: "switch", value: "on")
                     sendEvent(name: "contact", value: "closed")
                 }
+                else if (msg[5] == "4") {
+                    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Night")
+                    parent.updateAlarmSystemStatus("armNight")
+                    sendEvent(name: "alarmStatus", value: "armNight")
+                    sendEvent(name: "awaySwitch", value: "off")
+                    sendEvent(name: "staySwitch", value: "off")
+                    sendEvent(name: "nightSwitch", value: "on")
+                    sendEvent(name: "switch", value: "on")
+                    sendEvent(name: "contact", value: "closed")
+                }                
             }
             else if (msg[3] == "2") {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Arming")
-                parent.updateAlarmSystemStatus("arming")
-                sendEvent(name: "alarmStatus", value: "arming")
-                sendEvent(name: "awaySwitch", value: "off")
-                sendEvent(name: "staySwitch", value: "off")
-                sendEvent(name: "switch", value: "on")
+                //parent.updateAlarmSystemStatus("arming")
+                sendEvent(name: "systemStatus", value: "arming")
+                // sendEvent(name: "awaySwitch", value: "off")
+                // sendEvent(name: "staySwitch", value: "off")
+                // sendEvent(name: "nightSwitch", value: "off")
+                // sendEvent(name: "switch", value: "on")
             }
+            else if (msg[3] == "3") {
+               parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Armed")
+               // parent.updateAlarmSystemStatus("armed")
+               sendEvent(name: "systemStatus", value: "armed")
+                
+            }            
         } else if ( msg.substring(0, 2) == "SY" ) {
          // Process various system statuses
             if ( msg.substring(3, 6) == "658")  {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm System Status Keypad Lockout")
                 sendEvent(name: "systemStatus", value: "System Status\nKeypad Lockout")
             }
+            else if ( msg.substring(3, 6) == "659")  {
+                parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Keypad Blanking")
+                sendEvent(name: "systemStatus", value: "keypadBlanking")
+            }            
             else if ( msg.substring(3, 6) == "670")  {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm Invalid Access Code")
                 sendEvent(name: "systemStatus", value: "System Status\nInvalid Access Code")
@@ -122,6 +151,10 @@ def dscalarmparse(String description) {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm System Status Failed to Arm")
                 sendEvent(name: "systemStatus", value: "System Status\nFailed to arm")
             }
+            else if ( msg.substring(3, 6) == "673")  {
+                parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Partition Busy")
+                sendEvent(name: "systemStatus", value: "partitionBusy")
+            }            
             else if ( msg.substring(3, 6) == "802")  {
                 parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Parse msg - Alarm System Status Panel AC Trouble")
                 sendEvent(name: "systemStatus", value: "System Status\nPanel AC Trouble")
@@ -271,30 +304,19 @@ def off() {
     disarm()
 }
 
-def away() {
-    armAway()
-}
-
-def strobe() {
-    panic()
-}
-
-def siren() {
-    panic()
-} 
-
-def both() {
-    panic()
-}
-
 // Commands sent to the device
 def armAway() {
     parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending armAway command")
     sendRaspberryCommand("alarmArmAway")
 }
 
-def armStay() {
-    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending armStay command")
+def armNight() {
+    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending armNight command")
+    sendRaspberryCommand("alarmArmNight")
+}
+
+def armHome() {
+    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending armHome command")
     sendRaspberryCommand("alarmArmStay")
 }
 
@@ -308,21 +330,28 @@ def chimeToggle() {
     sendRaspberryCommand("alarmChimeToggle")
 }
 
-def panic() {
-    log.debug "DSCAlarm AlarmDeviceType - Sending panic command"
-    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending Toggling chime")        
+def siren() {
+    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending alarmPanic")    
     sendRaspberryCommand("alarmPanic")
 }
 
+def strobe() {
+    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending alarmFire")    
+    sendRaspberryCommand("alarmFire")
+}
+
 def alarmsetdate() {
-    log.debug "DSCAlarm AlarmDeviceType - Sending alarmSetDate command"
+    parent.writeLog("DSCAlarmSmartAppV2 AlarmPanel Device Type - Sending alarmSetDate")    
     sendRaspberryCommand("alarmsetdate")
 }
 
 // TODO: Need to send off, on, off with a few secs in between to stop and clear the alarm
-def clear() {
-    disarm()
+def refresh() {
+    log.info "DSC AlarmPanel issued command: alarmUpdate"
+    sendRaspberryCommand("alarmUpdate")
 }
+
+
 
 def sendRaspberryCommand(String command) {
 	def path = "/api/$command"

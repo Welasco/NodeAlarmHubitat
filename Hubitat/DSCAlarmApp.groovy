@@ -111,16 +111,16 @@ def alarmHandler(evt) {
     return
   }
 
-  if (state.alarmSystemStatus == evt.value) {
-    return
-  }
+  // if (state.alarmSystemStatus == evt.value) {
+  //   return
+  // }
   state.alarmSystemStatus = evt.value
 
   if (evt.value == "armedHome") {
     sendCommand('/api/alarmArmStay');
   }
   if (evt.value == "armedNight") {
-    sendCommand('/api/alarmArmStay');
+    sendCommand('/api/alarmArmNight');
   }  
   if (evt.value == "armedAway") {
     sendCommand('/api/alarmArmAway');
@@ -212,19 +212,22 @@ private updateAlarmDeviceType(String cmd) {
   }
 }
 
+
 private updateAlarmSystemStatus(partitionstatus) {
-  if (!settings.enableSHM || partitionstatus == "arming") {
+  if (!settings.enableSHM) {
     return
   }
-
   def lastAlarmSystemStatus = state.alarmSystemStatus
-  if (partitionstatus == "armedstay") {
+  if (partitionstatus == "armHome") {
     state.alarmSystemStatus = "armHome"
   }
-  if (partitionstatus == "armedaway") {
+  if (partitionstatus == "armNight") {
+  state.alarmSystemStatus = "armNight"
+  }   
+  if (partitionstatus == "armAway") {
     state.alarmSystemStatus = "armAway"
   }
-  if (partitionstatus == "ready") {
+  if (partitionstatus == "disarmed") {
     state.alarmSystemStatus = "disarm"
   }
 
