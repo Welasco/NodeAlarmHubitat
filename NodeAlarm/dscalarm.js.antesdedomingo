@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 /*
  DSC Alarm Bridge
  This NodeJS code will work like a bridge/proxy between Smartthings and DSC IT-100 Serial board
@@ -312,7 +311,7 @@ function alarmArm() {
 
 // Send the ArmAway command to Alarm
 function alarmArmAway() {
-    var cmd = "0301";
+    var cmd = "0321";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
@@ -327,8 +326,7 @@ function alarmArmStay() {
 //////////////////////////////////////
 // Send the ArmNight command to Alarm
 function alarmArmNight() {
-    var cmd = "0331";
-    var cmd = "0331" + alarmPassword + "00";
+    var cmd = "0311";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }
@@ -708,22 +706,15 @@ function parseReceivedData(data) {
             sendSmartThingMsg(msg);
         }
         else if (cmd == "500") {
-            // Alarm command 031 means stay
-            // if ((cmdfullstr.substr(0, 8)) == "5000332B") {
-            if ((cmdfullstr.substr(0, 8)) == "50003129") {
+            if ((cmdfullstr.substr(0, 8)) == "5000332B") {
                 var msg = ("AR-112");
                 sendSmartThingMsg(msg);
             }
-            // Alarm command 033 means arm with code but with delay entry
-            //else if ((cmdfullstr.substr(0, 8)) == "50003129") {
-            else if ((cmdfullstr.substr(0, 8)) == "5000332B") {
+            else if ((cmdfullstr.substr(0, 8)) == "50003129") {
                 var msg = ("AR-114");
                 sendSmartThingMsg(msg);
             }
-            // Alarm command 030 means away
-            //else if ((cmdfullstr.substr(0, 8)) == "5000322A") {
-            else if ((cmdfullstr.substr(0, 8)) == "50003028") {                
-                
+            else if ((cmdfullstr.substr(0, 8)) == "5000322A") {
                 var msg = ("AR-110");
                 sendSmartThingMsg(msg);
             }

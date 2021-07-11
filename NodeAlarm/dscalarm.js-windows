@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 
 /*
  DSC Alarm Bridge
@@ -328,7 +328,6 @@ function alarmArmStay() {
 // Send the ArmNight command to Alarm
 function alarmArmNight() {
     var cmd = "0331";
-    var cmd = "0331" + alarmPassword + "00";
     cmd = appendChecksum(cmd);
     sendToSerial(cmd);
 }

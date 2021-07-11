@@ -81,8 +81,8 @@ def initialize() {
     subscribe(location, null, lanResponseHandler, [filterEvents:false])
     //subscribe(location, "alarmSystemStatus", alarmHandler)
     subscribe(location, "hsmStatus", alarmHandler)
-    subscribe(location, "hsmRules", alarmHandler)
-    subscribe (location, "hsmAlerts", alertHandler)
+    subscribe(location, "hsmRules", alarmHandlerhsmRules)
+    subscribe (location, "hsmAlerts", alarmHandlerhsmAlerts)
     writeLog("info","DSCAlarmSmartAppV2 - Initialize")
 }
 
@@ -106,28 +106,43 @@ private removeZoneChildDevices() {
 }
 
 def alarmHandler(evt) {
-  writeLog("debug","DSCAlarmSmartAppV2 - Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
+  writeLog("debug","DSCAlarmSmartAppV2 - alarmHandler Method HSM alarmHandler: ${evt} ${evt.value} ${evt.descriptionText}")
   if (!settings.enableSHM) {
     return
   }
+  writeLog("debug","DSCAlarmSmartAppV2 - alarmHandler state commandfromAlarm: ${atomicState.commandfromAlarm}")
+  if(atomicState.commandfromAlarm == false){
+    writeLog("debug","DSCAlarmSmartAppV2 - alarmHandler HSM current status per DSCAlarmSmartAppV2 - ${atomicState.alarmSystemStatus}")
+    if (evt.value == "armedHome") {
+      sendCommand('/api/alarmArmStay');
+    }
+    if (evt.value == "armedNight") {
+      sendCommand('/api/alarmArmNight');
+    }  
+    if (evt.value == "armedAway") {
+      sendCommand('/api/alarmArmAway');
+    }
+    if (evt.value == "disarmed") {
+      sendCommand('/api/alarmDisarm');
+    }
+    if (evt.value == "allDisarmed") {
+      sendCommand('/api/alarmDisarm');
+    }  
+    atomicState.commandfromAlarm = false
+    writeLog("debug","DSCAlarmSmartAppV2 - alarmHandler HSM Status change from Hubitat HSM state commandfromAlarm: ${atomicState.commandfromAlarm}")
+  }
+  else{
+    atomicState.commandfromAlarm = false
+    writeLog("debug","DSCAlarmSmartAppV2 - alarmHandler HSM Status change from Alarm Board. Do nothing. commandfromAlarm: ${atomicState.commandfromAlarm}")
+  }
+  if(evt.value == "allDisarmed" || evt.value == "disarmed"){
+    atomicState.alarmSystemStatus = "disarmed"
+  }
+  else{
+    atomicState.alarmSystemStatus = evt.value
+  }
 
-  state.alarmSystemStatus = evt.value
-  writeLog("debug","DSCAlarmSmartAppV2 - HSM current status per DSCAlarmSmartAppV2 - ${state.alarmSystemStatus}")
-  if (evt.value == "armedHome") {
-    sendCommand('/api/alarmArmStay');
-  }
-  if (evt.value == "armedNight") {
-    sendCommand('/api/alarmArmNight');
-  }  
-  if (evt.value == "armedAway") {
-    sendCommand('/api/alarmArmAway');
-  }
-  if (evt.value == "disarmed") {
-    sendCommand('/api/alarmDisarm');
-  }
-  if (evt.value == "allDisarmed") {
-    sendCommand('/api/alarmDisarm');
-  }  
+  
 }
 
 def alarmHandlerhsmRules(evt){
@@ -214,23 +229,43 @@ private updateAlarmSystemStatus(partitionstatus) {
   if (!settings.enableSHM) {
     return
   }
-  def lastAlarmSystemStatus = state.alarmSystemStatus
-  if (partitionstatus == "armHome") {
-    state.alarmSystemStatus = "armHome"
+  def lastAlarmSystemStatus = atomicState.alarmSystemStatus
+  if (partitionstatus == "armedHome") {
+    atomicState.alarmSystemStatus = "armedHome"
   }
-  if (partitionstatus == "armNight") {
-  state.alarmSystemStatus = "armNight"
+  if (partitionstatus == "armedNight") {
+    atomicState.alarmSystemStatus = "armedNight"
   }   
-  if (partitionstatus == "armAway") {
-    state.alarmSystemStatus = "armAway"
+  if (partitionstatus == "armedAway") {
+    atomicState.alarmSystemStatus = "armedAway"
   }
   if (partitionstatus == "disarmed") {
-    state.alarmSystemStatus = "disarm"
+    atomicState.alarmSystemStatus = "disarmed"
   }
-
-  if (lastAlarmSystemStatus != state.alarmSystemStatus) {
-    sendLocationEvent(name: "hsmSetArm", value: state.alarmSystemStatus)
+  if (partitionstatus == "allDisarmed") {
+    atomicState.alarmSystemStatus = "allDisarmed"
+  }  
+  if (lastAlarmSystemStatus != atomicState.alarmSystemStatus) {
+    atomicState.commandfromAlarm = true
+    if(atomicState.alarmSystemStatus == "armedAway"){
+      sendLocationEvent(name: "hsmSetArm", value: "armAway")
+    }
+    if(atomicState.alarmSystemStatus == "armedNight"){
+      sendLocationEvent(name: "hsmSetArm", value: "armNight")
+    }
+    if(atomicState.alarmSystemStatus == "armedHome"){
+      sendLocationEvent(name: "hsmSetArm", value: "armHome")
+    }
+    if(atomicState.alarmSystemStatus == "disarmed"){
+      sendLocationEvent(name: "hsmSetArm", value: "disarm")
+    }            
+    if(atomicState.alarmSystemStatus == "allDisarmed"){
+      sendLocationEvent(name: "hsmSetArm", value: "disarmAll")
+    }    
+    //sendLocationEvent(name: "hsmSetArm", value: atomicState.alarmSystemStatus)
+    writeLog("debug","DSCAlarmSmartAppV2 - updateAlarmSystemStatus change state commandfromAlarm to: ${atomicState.commandfromAlarm}")
   }
+  writeLog("debug","DSCAlarmSmartAppV2 - updateAlarmSystemStatus lastAlarmSystemStatus: ${lastAlarmSystemStatus} atomicState.alarmSystemStatus: ${atomicState.alarmSystemStatus} atomicState.commandfromAlarm: ${atomicState.commandfromAlarm}")
 }
 
 def alarmUpdate() {

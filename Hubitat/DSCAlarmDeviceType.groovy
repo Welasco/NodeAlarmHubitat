@@ -81,8 +81,8 @@ def dscalarmparse(String description) {
             else if (msg[3] == "1") {
                 if (msg[5] == "0") {
                     parent.writeLog("info","DSC AlarmPanel: AR - Alarm Away")
-                    parent.updateAlarmSystemStatus("armAway")
-                    sendEvent(name: "alarmStatus", value: "armAway")
+                    parent.updateAlarmSystemStatus("armedAway")
+                    sendEvent(name: "alarmStatus", value: "armedAway")
                     sendEvent(name: "awaySwitch", value: "on")
                     sendEvent(name: "staySwitch", value: "off")
                     sendEvent(name: "nightSwitch", value: "off")
@@ -90,9 +90,9 @@ def dscalarmparse(String description) {
                     sendEvent(name: "contact", value: "closed")
                 }
                 else if (msg[5] == "2") {
-                    parent.writeLog("info","DSC AlarmPanel: AR - Alarm Stay")
-                    parent.updateAlarmSystemStatus("armHome")
-                    sendEvent(name: "alarmStatus", value: "armHome")
+                    parent.writeLog("info","DSC AlarmPanel: AR - Alarm Stay/Home")
+                    parent.updateAlarmSystemStatus("armedHome")
+                    sendEvent(name: "alarmStatus", value: "armedHome")
                     sendEvent(name: "awaySwitch", value: "off")
                     sendEvent(name: "staySwitch", value: "on")
                     sendEvent(name: "nightSwitch", value: "off")
@@ -101,8 +101,8 @@ def dscalarmparse(String description) {
                 }
                 else if (msg[5] == "4") {
                     parent.writeLog("info","DSC AlarmPanel: AR - Alarm Night")
-                    parent.updateAlarmSystemStatus("armNight")
-                    sendEvent(name: "alarmStatus", value: "armNight")
+                    parent.updateAlarmSystemStatus("armedNight")
+                    sendEvent(name: "alarmStatus", value: "armedNight")
                     sendEvent(name: "awaySwitch", value: "off")
                     sendEvent(name: "staySwitch", value: "off")
                     sendEvent(name: "nightSwitch", value: "on")
@@ -312,8 +312,8 @@ def armHome() {
 
 def disarm() {
     parent.writeLog("info","DSC AlarmPanel: Sending disarm")    
-    //sendRaspberryCommand("alarmDisarm")
-    parent.updateAlarmSystemStatus("disarmed")
+    sendRaspberryCommand("alarmDisarm")
+    //parent.updateAlarmSystemStatus("disarmed")
 }
 
 def chimeToggle() {
