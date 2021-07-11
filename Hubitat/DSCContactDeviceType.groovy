@@ -26,10 +26,10 @@ def updatedevicezone(String cmd) {
   parent.writeLog("DSCAlarmSmartAppV2 Contact Device Type - Processing command: $cmd")
 	if(cmd.substring(3,9).substring(0,3) == "609"){
 		sendEvent (name: "contact", value: "open")
-    parent.writeLog("DSCAlarmSmartAppV2 Contact Device Type - Changed to: Open")
+    //parent.writeLog("info","DSC Zone ${device} value: Open")
 	}
 	else if (cmd.substring(3,9).substring(0,3) == "610"){
 		sendEvent (name: "contact", value: "closed")
-    parent.writeLog("DSCAlarmSmartAppV2 Contact Device Type - Changed to: Closed")
+    //parent.writeLog("info","DSC Zone ${device} value: Closed")
 	}
 }
