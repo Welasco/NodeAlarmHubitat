@@ -263,6 +263,10 @@ private updateAlarmSystemStatus(partitionstatus) {
   writeLog("debug","DSCAlarmSmartAppV2 - updateAlarmSystemStatus lastAlarmSystemStatus: ${lastAlarmSystemStatus} atomicState.alarmSystemStatus: ${atomicState.alarmSystemStatus} atomicState.commandfromAlarm: ${atomicState.commandfromAlarm}")
 }
 
+private getalarmSystemStatus(){
+  return atomicState.alarmSystemStatus
+}
+
 def alarmUpdate() {
   sendCommand('/api/alarmUpdate')
   writeLog("info","DSCAlarmSmartAppV2 - Sending Alarm Update request")
