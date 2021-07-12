@@ -117,7 +117,10 @@ def dscalarmparse(String description) {
             else if (msg[3] == "3") {
                parent.writeLog("info","DSC AlarmPanel: AR - Alarm Armed")
                sendEvent(name: "systemStatus", value: "armed")
-                
+               if(parent.getalarmSystemStatus() == "disarmed" || parent.getalarmSystemStatus() == "disarmAll"){
+                   parent.writeLog("info","DSC AlarmPanel: AR - Alarm Armed from Keypayd")
+                   parent.updateAlarmSystemStatus("armedAway")
+               }
             }            
         } else if ( msg.substring(0, 2) == "SY" ) {
          // Process various system statuses
@@ -331,7 +334,7 @@ def strobe() {
     sendRaspberryCommand("alarmFire")
 }
 
-def alarmsetdate() {
+def alarmSetDate() {
     parent.writeLog("info","DSC AlarmPanel: Sending alarmSetDate")    
     sendRaspberryCommand("alarmsetdate")
 }
