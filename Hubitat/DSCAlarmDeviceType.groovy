@@ -331,7 +331,7 @@ def strobe() {
     sendRaspberryCommand("alarmFire")
 }
 
-def alarmsetdate() {
+def alarmSetDate() {
     parent.writeLog("info","DSC AlarmPanel: Sending alarmSetDate")    
     sendRaspberryCommand("alarmsetdate")
 }
