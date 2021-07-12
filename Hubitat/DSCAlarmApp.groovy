@@ -2,7 +2,7 @@
  *  DSCAlarmApp
  *
  *  Author: Victor Santana
- *  Date: 2017-12-21
+ *  Date: 07-11-2021
  */
 
 definition(
@@ -27,16 +27,11 @@ preferences {
 
 def page1() {
   dynamicPage(name: "page1", install: true, uninstall: true) {
-    // section("SmartThings Hub") {
-    //   input "hostHub", "hub", title: "Select Hub", multiple: false, required: true
-    // }
-    section("SmartThings Raspberry") {
+    section("NodeAlarm Raspberry") {
       input "proxyAddress", "text", title: "Proxy Address", description: "(ie. 192.168.1.10)", required: true
       input "proxyPort", "text", title: "Proxy Port", description: "(ie. 3000)", required: true, defaultValue: "3000"
-      //input "authCode", "password", title: "Auth Code", description: "", required: true, defaultValue: "secret-key"
     }
     section("DSCAlarm Arm Disarm") {
-      //input name: "pluginType", type: "enum", title: "Plugin Type", required: true, submitOnChange: true, options: ["envisalink", "ad2usb"]
       input "securityCode", "password", title: "Security Code", description: "User code to arm/disarm the security panel", required: true
       input "enableDiscovery", "bool", title: "Discover Zones (WARNING: all existing zones will be removed)", required: false, defaultValue: false
     }
@@ -45,7 +40,7 @@ def page1() {
       input "enableSHM", "bool", title: "Integrate with Smart Home Monitor", required: true, defaultValue: true
     }
 
-		section("Enable Debug Log at SmartThing IDE"){
+		section("Enable Debug Log at Hubitat IDE"){
 			input "idelog", "bool", title: "Select True or False:", defaultValue: false, required: false
 		}     
   }

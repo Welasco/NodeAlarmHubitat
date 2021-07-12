@@ -2,12 +2,12 @@
 
 /*
  DSC Alarm Bridge
- This NodeJS code will work like a bridge/proxy between Smartthings and DSC IT-100 Serial board
- This code will monitor the DSC IT-100 Serial board and will send and received commands to SmartThings ServiceManager (Also known as SmartApp)
+ This NodeJS code will work like a bridge/proxy between Hubitat and DSC IT-100 Serial board
+ This code will monitor the DSC IT-100 Serial board and will send and received commands to Hubitat Device Handler which will call the parent App when necessary
 
- To install the dependencies just open the npm and type "npm install" inside of the project folder
+ To install the dependencies just open the npm and type "npm install" inside of the project folder NodeAlarm
 
- SmartTing Reference:
+ SmartThing Reference:
  Building LAN-connected Device Types
  http://docs.smartthings.com/en/latest/cloud-and-lan-connected-device-types-developers-guide/building-lan-connected-device-types/index.html
 
@@ -23,6 +23,9 @@
 
  Division of Labor - Architecture
  http://docs.smartthings.com/en/latest/cloud-and-lan-connected-device-types-developers-guide/building-lan-connected-device-types/division-of-labor.html
+
+ Hubitat® Safety Monitor Interface
+ https://docs.hubitat.com/index.php?title=Hubitat%C2%AE_Safety_Monitor_Interface#App_arms_HSM
 
  Code Reference:
  https://github.com/entrocode/SmartDSC
@@ -174,8 +177,8 @@ app.get("/api/alarmUpdate", function (req, res) {
 });
 
 /**
- * Subscribe route used by SmartThings Hub to register for callback/notifications and write to config.json
- * @param {String} host - The SmartThings Hub IP address and port number
+ * Subscribe route used by Hubitat Hub to register for callback/notifications and write to config.json
+ * @param {String} host - The Hubitat Hub IP address and port number
  */
 app.get('/subscribe/:host', function (req, res) {
     var parts = req.params.host.split(":");
@@ -192,7 +195,7 @@ app.get('/subscribe/:host', function (req, res) {
     logger("Subscribe","Hubitat IpAddress: "+parts[0] +" Port: "+ parts[1]);
 });
 
-// Used to save the DSCAlarm password comming from SmartThings App
+// Used to save the DSCAlarm password comming from Hubitat App
 app.get('/config/:host', function (req, res) {
     //var parts = req.params.host.split(":");
     var parts = req.params.host;
@@ -220,7 +223,7 @@ app.get('/config/:host', function (req, res) {
 /**
  * discover
  */
-// Used to send all zones back to SmartThings
+// Used to send all zones back to Hubitat
 app.get("/discover", function (req, res) {
     alarmDiscover();
     res.end();
@@ -435,8 +438,8 @@ function alarmSetDate() {
     sendToSerial(cmd);
 }
 
-// Send all Zones from config.json back to SmartThings
-// SmartThings will create one child device based on this settings
+// Send all Zones from config.json back to Hubitat
+// Hubitat will create one child device based on this settings
 function alarmDiscover(){
     if (nconf.get('dscalarm:panelConfig')) {
         notify(JSON.stringify(nconf.get('dscalarm:panelConfig')));
@@ -502,8 +505,8 @@ function appendChecksum(data) {
 
 ///////////////////////////////////////////
 // Function used to parser all received commands from the Alarm
-// We will analise the received data and send the request to SmartThing to control the app
-// Based on what we have received we will change the Device Alarm and Zone (Open/Close Sensor) on SmartThing
+// We will analise the received data and send the request to Hubitat to control the app
+// Based on what we have received we will change the Device Alarm and Zone (Open/Close Sensor) on Hubitat
 // Alarm Documentation - http://cms.dsc.com/download.php?t=1&id=16238
 //500 previous command received
 //501 command error
