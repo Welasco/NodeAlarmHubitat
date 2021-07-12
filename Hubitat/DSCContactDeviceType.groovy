@@ -2,9 +2,8 @@
  *  DSCOpenCloseDeviceType
  *
  *  Author: Victor Santana
- *   based on work by XXX
  *  
- *  Date: 2020-12-02
+ *  Date: 07/11/2021
  */
 
 // for the UI
